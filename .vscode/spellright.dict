@@ -1,3 +1,5 @@
 sqlite
 todos
 todos.db
+todosapp.db
+bcrypt

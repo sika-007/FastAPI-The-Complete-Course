@@ -2,7 +2,6 @@ from fastapi import FastAPI
 import models
 from routers import auth, todos
 from db.database import engine
-from db.database import SessionLocal
 
 app = FastAPI()
 

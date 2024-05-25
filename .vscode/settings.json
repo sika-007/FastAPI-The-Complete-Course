@@ -2,10 +2,5 @@
   "python.analysis.typeCheckingMode": "basic",
   "spellright.language": ["en"],
   "spellright.documentTypes": ["markdown", "latex", "plaintext", "python"],
-  "cSpell.words": [
-    "db",
-    "sessionmaker",
-    "SQLALCHEMY",
-    "Todos"
-  ]
+  "cSpell.words": ["db", "sessionmaker", "SQLALCHEMY", "Todos", "todosapp"]
 }
