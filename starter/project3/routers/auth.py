@@ -9,13 +9,14 @@ from passlib.context import CryptContext
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from datetime import timedelta, datetime
 from jose import jwt, JWTError
+import os
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 db_dependency = Annotated[Session, Depends(get_db)]
 bcrypt_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_bearer = OAuth2PasswordBearer(tokenUrl="auth/token")
 
-SECRET_KEY = "376d2a70a80c826c7367ce2257369efabbbd8c8f11f40fdb2ca9689934c151c6"
+SECRET_KEY = str(os.getenv("SECRET_KEY"))
 ALGORITHM = 'HS256'
 
 
