@@ -89,6 +89,5 @@ async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm,
                             detail="Username or password is incorrect")
     token = create_access_token(
         # type: ignore
-        # type: ignore
         authenticated_user.username, authenticated_user.id, authenticated_user.role, timedelta(minutes=20))
     return {"access_token": token, "token_type": "bearer"}
