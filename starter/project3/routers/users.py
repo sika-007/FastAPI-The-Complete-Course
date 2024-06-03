@@ -36,9 +36,24 @@ async def get_user(user: user_dependency, db: db_dependency):
         "first_name": user_record.first_name,
         "last_name": user_record.last_name,
         "is_active": user_record.is_active,
-        "role": user_record.role
+        "role": user_record.role,
+        "phone_number": user_record.phone_number
     }
     return db_user
+
+
+@router.put("/user/phone", status_code=status.HTTP_204_NO_CONTENT)
+async def update_phone_number(user: user_dependency, db: db_dependency, phone_number: str):
+    if user is None:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
+                            detail="Unauthenticated")
+    user_record = db.query(Users).filter(Users.id == user.get("id")).first()
+    if user_record is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+    user_record.phone_number = phone_number  # type: ignore
+    db.add(user_record)
+    db.commit()
 
 
 @router.post("/change_password", status_code=status.HTTP_204_NO_CONTENT)

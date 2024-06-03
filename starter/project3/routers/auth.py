@@ -26,7 +26,21 @@ class CreateUserRequest(BaseModel):
     first_name: str = Field()
     last_name: str = Field()
     password: str = Field()
+    phone_number: str = Field()
     role: str = Field()
+
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "username": "sika_007",
+                "email": "nsikaktheman@gmail.com",
+                "first_name": "Nsikak",
+                "last_name": "Thomas",
+                "password": "averystrongone1234",
+                "phone_number": "+234-8167739545",
+                "role": "user"
+            }
+        }
 
 
 class Token(BaseModel):
@@ -73,6 +87,7 @@ async def create_user(create_user_request: CreateUserRequest, db: db_dependency)
         first_name=create_user_request.first_name,
         last_name=create_user_request.last_name,
         role=create_user_request.role,
+        phone_number=create_user_request.phone_number,
         hashed_password=bcrypt_context.hash(create_user_request.password),
         is_active=True
     )
