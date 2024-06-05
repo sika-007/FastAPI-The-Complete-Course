@@ -1,11 +1,11 @@
 from typing import Annotated
 from sqlalchemy.orm import Session
 from pydantic import Field, BaseModel
-from db.get_db import get_db
-from models import Todos
+from app.db.get_db import get_db
+from app.models import Todos
 from starlette import status
 from fastapi import APIRouter, Path, HTTPException, Depends
-from routers.auth import get_current_user
+from app.routers.auth import get_current_user
 
 router = APIRouter(prefix="/todos", tags=["todos"])
 

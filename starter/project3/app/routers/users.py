@@ -1,12 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException, Path
-from db.get_db import get_db
+from app.db.get_db import get_db
 from typing import Annotated
 from sqlalchemy.orm import Session
-from routers.auth import get_current_user
+from app.routers.auth import get_current_user
 from starlette import status
-from models import Users
+from app.models import Users
 from pydantic import BaseModel, Field
-from routers.auth import bcrypt_context
+from app.routers.auth import bcrypt_context
 
 
 db_dependency = Annotated[Session, Depends(get_db)]
