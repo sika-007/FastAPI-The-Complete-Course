@@ -1,6 +1,6 @@
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
-from routers.auth import get_current_user, get_user_exception
+from routers.auth import get_current_user
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 from database import engine, SessionLocal
