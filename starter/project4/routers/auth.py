@@ -7,7 +7,7 @@ from passlib.context import CryptContext
 import models
 from typing import Optional
 from pydantic import BaseModel
-from fastapi import Depends, HTTPException, status, APIRouter, Request, Response
+from fastapi import Depends, HTTPException, status, APIRouter, Request, Response, Form
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 import sys
@@ -109,23 +109,6 @@ async def get_current_user(request: Request):
         raise get_user_exception()
 
 
-@router.post("/create/user")
-async def create_new_user(create_user: CreateUser, db: Session = Depends(get_db)):
-    create_user_model = models.Users()
-    create_user_model.email = create_user.email
-    create_user_model.username = create_user.username
-    create_user_model.first_name = create_user.first_name
-    create_user_model.last_name = create_user.last_name
-
-    hash_password = get_password_hash(create_user.password)
-
-    create_user_model.hashed_password = hash_password
-    create_user_model.is_active = True
-
-    db.add(create_user_model)
-    db.commit()
-
-
 @router.post("/token")
 async def login_for_access_token(response: Response, form_data: OAuth2PasswordRequestForm = Depends(),
                                  db: Session = Depends(get_db)):
@@ -173,25 +156,53 @@ async def logout(request: Request):
     return response
 
 
+@router.post("/register", response_class=HTMLResponse)
+async def register_user(request: Request, email: str = Form(...), username: str = Form(...), firstname: str = Form(...), lastname: str = Form(), password: str = Form(...), password2: str = Form(...), db: Session = Depends(get_db)):
+    validation1 = db.query(models.Users).filter(
+        models.Users.username == username).first()
+    validation2 = db.query(models.Users).filter(
+        models.Users.email == email).first()
+
+    if password != password2 or validation1 is not None or validation2 is not None:
+        msg = "Invalid registration request"
+        return templates.TemplateResponse("register.html", {"request": request, "msg": msg})
+
+    user_model = models.Users()
+    user_model.username = username
+    user_model.email = email
+    user_model.first_name = firstname
+    user_model.last_name = lastname
+
+    hashed_password = get_password_hash(password)
+    user_model.hashed_password = hashed_password
+    user_mode.is_active = True
+
+    db.add(user_model)
+    db.commit()
+
+    msg = "User successfully created"
+    return templates.TemplateResponse("login.html", {"request": request, "msg": msg})
+
+
 @router.get("/register", response_class=HTMLResponse)
 async def register(request: Request):
     return templates.TemplateResponse("register.html", {"request": request})
 
 
 # Exceptions
-def get_user_exception():
-    credentials_exception = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validate credentials",
-        headers={"WWW-Authenticate": "Bearer"},
-    )
-    return credentials_exception
+# def get_user_exception():
+#     credentials_exception = HTTPException(
+#         status_code=status.HTTP_401_UNAUTHORIZED,
+#         detail="Could not validate credentials",
+#         headers={"WWW-Authenticate": "Bearer"},
+#     )
+#     return credentials_exception
 
 
-def token_exception():
-    token_exception_response = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Incorrect username or password",
-        headers={"WWW-Authenticate": "Bearer"},
-    )
-    return token_exception_response
+# def token_exception():
+#     token_exception_response = HTTPException(
+#         status_code=status.HTTP_401_UNAUTHORIZED,
+#         detail="Incorrect username or password",
+#         headers={"WWW-Authenticate": "Bearer"},
+#     )
+#     return token_exception_response
