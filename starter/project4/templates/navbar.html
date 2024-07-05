@@ -20,8 +20,11 @@
         </li>
         {% endif %}
       </ul>
-      <ul class="navbar-nav">
+      <ul class="navbar-nav ml-auto">
         {% if user %}
+        <li class="nav-item m-1">
+          <a type="button" class="btn btn-outline-light" href="/users/"></a>
+        </li>
         <li class="nav-item m-1">
           <a type="button" class="btn btn-outline-light" href="/auth/logout"
             >Logout</a
